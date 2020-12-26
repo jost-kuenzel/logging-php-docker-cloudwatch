@@ -24,15 +24,23 @@ RUN set -eu; \
     mv /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini; \
     { \
         echo '[global]'; \
+        echo '; Log limit for the logged lines which allows to log messages longer than 1024 characters without wrapping.'; \
+        echo '; Default value: 1024. Available as of PHP 7.3.0. https://www.php.net/manual/en/install.fpm.configuration.php'; \
         echo '; Maximum CloudWatch log event size is 256KB https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html'; \
-        echo 'log_limit = 65536'; \
+        echo '; 256 KiloBytes x 1024 Bytes/KiloByte = 262144 Bytes'; \
+        echo 'log_limit = 262144'; \
         echo '[www]'; \
-        echo 'listen = /var/run/php-fpm.sock'; \
-        echo 'listen.mode = 0666'; \
+        echo 'access.log = /dev/null'; \
     } | tee /usr/local/etc/php-fpm.d/zz-docker.conf; \
     { \
+        echo '; Set the maximum length of log_errors in bytes. In error_log information about the source is added.'; \
+        echo '; The default is 1024 and 0 allows to not apply any maximum length at all.'; \
+        echo '; This length is applied to logged errors, displayed errors and also to \$php_errormsg, but not to explicitly called functions such as error_log().'; \
+        echo '; When an int is used, the value is measured in bytes. Shorthand notation, as described in this FAQ, may also be used. '; \
+        echo '; https://www.php.net/manual/en/errorfunc.configuration.php'; \
         echo '; Maximum CloudWatch log event size is 256KB https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html'; \
-        echo 'log_errors_max_len = 65536'; \
+        echo '; 256 KiloBytes x 1024 Bytes/KiloByte = 262144 Bytes'; \
+        echo 'log_errors_max_len = 262144'; \
     } | tee -a /usr/local/etc/php/php.ini
 
 # Install composer
