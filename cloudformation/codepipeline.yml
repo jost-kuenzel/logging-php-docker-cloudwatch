@@ -2,9 +2,6 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Builds a pipeline
 
 Parameters:
-  Env:
-    Type: String
-    Default: dev
   GithubUserName:
     Type: String
   GithubRepo:
