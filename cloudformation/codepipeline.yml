@@ -173,7 +173,6 @@ Resources:
                 ParameterOverrides: !Sub |
                   {
                     "ImageURI" : { "Fn::GetParam" : ["build-artifacts", "image.json", "ImageURI"] },
-                    "Env":  "${Env}",
                     "ContainerPort": "${ContainerPort}"
                   }
                 RoleArn:

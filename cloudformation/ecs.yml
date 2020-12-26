@@ -2,8 +2,6 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Builds the AWS ECS Fargate Cluster.
 
 Parameters:
-  Stage:
-    Type: String
   ContainerPort:
     Type: Number
   ImageURI:
