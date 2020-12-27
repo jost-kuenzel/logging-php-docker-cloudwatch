@@ -11,7 +11,7 @@ Resources:
   Cluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId"]]
+      ClusterName: !Ref "AWS::StackName"
 
   VPC:
     Type: AWS::EC2::VPC
@@ -71,11 +71,7 @@ Resources:
   ExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName:
-        !Join [
-          "-",
-          [!Ref "AWS::StackName", !Ref "AWS::AccountId", "ecs-task-execution"],
-        ]
+      RoleName: !Join ["-", [!Ref "AWS::StackName", "ecs-task-execution"]]
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -85,6 +81,17 @@ Resources:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join ["-", [!Ref "AWS::StackName", "ecs-task"]]
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: "sts:AssumeRole"
+
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -93,10 +100,10 @@ Resources:
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - "FARGATE"
-      TaskRoleArn: !Ref ExecutionRole
+      TaskRoleArn: !Ref TaskRole
       ExecutionRoleArn: !Ref ExecutionRole
       ContainerDefinitions:
-        - Name: !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId"]]
+        - Name: !Ref "AWS::StackName"
           Image: !Ref ImageURI
           PortMappings:
             - ContainerPort: !Ref ContainerPort
@@ -105,8 +112,7 @@ Resources:
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription:
-        !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId", "lb"]]
+      GroupDescription: !Join ["-", [!Ref "AWS::StackName", "lb"]]
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -117,8 +123,7 @@ Resources:
   ContainerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription:
-        !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId", "container"]]
+      GroupDescription: !Join ["-", [!Ref "AWS::StackName", "container"]]
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -130,7 +135,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
-      Name: !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId"]]
+      Name: !Ref "AWS::StackName"
       Scheme: internet-facing
       SecurityGroups:
         - !Ref LoadBalancerSecurityGroup
@@ -142,7 +147,7 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId"]]
+      Name: !Ref "AWS::StackName"
       Port: 80
       Protocol: HTTP
       TargetType: ip
@@ -162,7 +167,7 @@ Resources:
     Type: AWS::ECS::Service
     DependsOn: LoadBalancerListener
     Properties:
-      ServiceName: !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId"]]
+      ServiceName: !Ref "AWS::StackName"
       Cluster: !Ref Cluster
       TaskDefinition: !Ref TaskDefinition
       DesiredCount: 2
@@ -176,7 +181,6 @@ Resources:
           SecurityGroups:
             - !Ref ContainerSecurityGroup
       LoadBalancers:
-        - ContainerName:
-            !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId"]]
+        - ContainerName: !Ref "AWS::StackName"
           ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroup
