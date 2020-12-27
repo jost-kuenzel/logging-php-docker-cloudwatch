@@ -25,16 +25,14 @@ Resources:
     Properties:
       CidrBlock: 172.10.1.0/24
       VpcId: !Ref VPC
-      AvailabilityZone:
-        !Join ["", [!Ref "AWS::StackName", !Ref "AWS::Region", "a"]]
+      AvailabilityZone: !Join ["", [!Ref "AWS::Region", "a"]]
 
   SubnetB:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 172.10.2.0/24
       VpcId: !Ref VPC
-      AvailabilityZone:
-        !Join ["", [!Ref "AWS::StackName", !Ref "AWS::Region", "b"]]
+      AvailabilityZone: !Join ["", [!Ref "AWS::Region", "b"]]
 
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
