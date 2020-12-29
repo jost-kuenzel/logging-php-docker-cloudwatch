@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Builds a deployer iam user and role
+
+Parameters:
+  UserName:
+    Type: String
+
+Resources:
+  DeployerUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Ref UserName
+
+  DeployerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref AWS::StackName
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+              - sts:TagSession
+            Principal:
+              AWS:
+                - !GetAtt [DeployerUser, Arn]
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodeBuildReadOnlyAccess
+
+  DeployerUserPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:TagSession
+              - sts:AssumeRole
+            Resource: !GetAtt [DeployerRole, Arn]
+      PolicyName: AllowToAssumeRoleAndTagSession
+      Users:
+        - !Ref DeployerUser
+
+Outputs:
+  DeployerUser:
+    Value: !Ref DeployerUser
+  DeployerRole:
+    Value: !Ref DeployerRole
