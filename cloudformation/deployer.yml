@@ -55,8 +55,7 @@ Resources:
                   [
                     "arn:aws:ecr:eu-central-1:",
                     !Ref AWS::AccountId,
-                    ":repository/log-docker-ecr-",
-                    !Ref AWS::AccountId,
+                    ":repository/log-docker-ecr",
                   ],
                 ]
           - Effect: Allow

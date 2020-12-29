@@ -5,5 +5,4 @@ Resources:
   ECRRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName:
-        !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId"]]
+      RepositoryName: !Join ["-", [!Ref "AWS::StackName"]]
