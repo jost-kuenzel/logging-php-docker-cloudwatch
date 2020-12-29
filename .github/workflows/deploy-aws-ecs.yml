@@ -31,6 +31,7 @@ jobs:
         with:
           name: log-docker-ecr
           template: cloudformation/ecr.yml
+          no-fail-on-empty-changeset: "1"
 
       - name: Login to Amazon ECR
         id: login-ecr
