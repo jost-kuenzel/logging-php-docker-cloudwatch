@@ -60,6 +60,10 @@ Resources:
                 ]
           - Effect: Allow
             Action:
+              - ecr:GetAuthorizationToken
+            Resource: "*"
+          - Effect: Allow
+            Action:
               - cloudformation:*
             Resource:
               - !Join [
