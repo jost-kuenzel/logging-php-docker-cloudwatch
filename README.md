@@ -5,6 +5,9 @@ to stdout in an AWS ECS environment.
 
 And for fun and out of curiosity the docker container can be build and deployed to AWS ECS using GitHub Actions 🚀.
 
+## _Work in Progress_
+_Note: this is still work in progress. Currently the deployment covers building the docker image and pushing it into ECR. But the ECS stack is not yet included._
+
 ## Prerequisites
 
 - Building the container on your machine requires `docker` and `docker-compose` (https://docs.docker.com/get-docker/ and https://docs.docker.com/compose/install/).
