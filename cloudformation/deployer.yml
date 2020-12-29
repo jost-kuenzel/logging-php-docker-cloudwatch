@@ -41,6 +41,40 @@ Resources:
       Users:
         - !Ref DeployerUser
 
+  DeployerRolePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - ecr:*
+            Resource:
+              - !Join [
+                  "",
+                  [
+                    "arn:aws:ecr:eu-central-1:",
+                    !Ref AWS::AccountId,
+                    ":repository/log-docker-ecr-",
+                    !Ref AWS::AccountId,
+                  ],
+                ]
+          - Effect: Allow
+            Action:
+              - cloudformation:*
+            Resource:
+              - !Join [
+                  "",
+                  [
+                    "arn:aws:cloudformation:eu-central-1:",
+                    !Ref AWS::AccountId,
+                    ":stack/log-docker-ecr/*",
+                  ],
+                ]
+      PolicyName: DeployerRoleCapabilities
+      Roles:
+        - !Ref DeployerRole
+
 Outputs:
   DeployerUser:
     Value: !Ref DeployerUser

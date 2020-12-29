@@ -25,3 +25,9 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-duration-seconds: 1200
+
+      - name: Deploy ECR through AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: log-docker-ecr
+          template: cloudformation/ecr.yml
