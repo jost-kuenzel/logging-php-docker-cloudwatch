@@ -1,0 +1,23 @@
+{
+  "name": "logging-php-docker",
+  "version": "1.0.0",
+  "repository": "git@github.com:jost-kuenzel/logging-php-docker-cloudwatch.git",
+  "author": "Jost Künzel <jost.kuenzel@gmail.com>",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "husky": "^4.3.6"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
+}
