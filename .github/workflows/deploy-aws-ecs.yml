@@ -40,7 +40,7 @@ jobs:
           name: log-docker-vpc
           template: cloudformation/vpc.yml
           capabilities: CAPABILITY_NAMED_IAM
-          parameter-overrides: "AvailabilityZone1={{ secrets.AWS_REGION }}a,AvailabilityZone2={{ secrets.AWS_REGION }}b"
+          parameter-overrides: "AvailabilityZone1=${{ secrets.AWS_REGION }}a,AvailabilityZone2=${{ secrets.AWS_REGION }}b"
           no-fail-on-empty-changeset: "1"
 
       - name: Login to Amazon ECR
