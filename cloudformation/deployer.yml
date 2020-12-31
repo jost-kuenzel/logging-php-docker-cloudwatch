@@ -24,8 +24,6 @@ Resources:
             Principal:
               AWS:
                 - !GetAtt [DeployerUser, Arn]
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AWSCodeBuildReadOnlyAccess
 
   DeployerUserPolicy:
     Type: AWS::IAM::Policy
@@ -48,16 +46,44 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
+              - ec2:*
+              - elasticloadbalancing:*
+              - application-autoscaling:*
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - iam:*
+            Resource:
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/log-docker-fargate-default-task-role"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/log-docker-fargate-default-task-execution-role"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/log-docker-fargate-service-auto-scaling-role"
+          - Effect: Allow
+            Action:
+              - logs:*
+            Resource:
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/fargate/log-docker-fargate/dev:log-stream:"
+          - Effect: Allow
+            Action:
+              - ecs:CreateCluster
+              - ecs:DeleteCluster
+              - ecs:ListClusters
+              - ecs:DescribeClusters
+              - ecs:RegisterTaskDefinition
+              - ecs:DeregisterTaskDefinition
+              - ecs:DescribeTaskDefinition
+              - ecs:ListTaskDefinitions
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - ecs:*
+            Resource:
+              - !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/log-docker-fargate"
+              - !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:service/log-docker-fargate/log-docker-fargate"
+          - Effect: Allow
+            Action:
               - ecr:*
             Resource:
-              - !Join [
-                  "",
-                  [
-                    "arn:aws:ecr:eu-central-1:",
-                    !Ref AWS::AccountId,
-                    ":repository/log-docker-ecr",
-                  ],
-                ]
+              - !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/log-docker-ecr"
           - Effect: Allow
             Action:
               - ecr:GetAuthorizationToken
@@ -66,14 +92,9 @@ Resources:
             Action:
               - cloudformation:*
             Resource:
-              - !Join [
-                  "",
-                  [
-                    "arn:aws:cloudformation:eu-central-1:",
-                    !Ref AWS::AccountId,
-                    ":stack/log-docker-ecr/*",
-                  ],
-                ]
+              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/log-docker-ecr/*"
+              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/log-docker-vpc/*"
+              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/log-docker-fargate/*"
       PolicyName: DeployerRoleCapabilities
       Roles:
         - !Ref DeployerRole
