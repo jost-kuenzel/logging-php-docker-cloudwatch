@@ -37,11 +37,8 @@ The result of the command will output i.a. `AccessKeyId` and `SecretAccessKey`. 
 Some secrets will be used by GitHub Actions. Either add them using the GitHub webpage (https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets) or use the GitHub CLI (https://cli.github.com/):
 ```bash
 gh secret set AWS_REGION -r <this/repository-name> -b <aws region e.g. us-east-1>
-
 gh secret set AWS_ROLE -r <this/repository-name> -b <name of the deployer role>
-
 gh secret set AWS_ACCESS_KEY_ID -r <this/repository-name> -b <the AccessKeyId>
-
 gh secret set AWS_SECRET_ACCESS_KEY -r <this/repository-name> -b <the SecretAccessKey>
 ```
 
