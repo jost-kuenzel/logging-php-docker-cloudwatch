@@ -49,7 +49,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # run composer:latest to install dependencies
-          docker run -it --rm --volume $PWD/app:/app composer:latest install
+          docker run --rm --volume $PWD/app:/app composer:latest install
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
