@@ -46,6 +46,9 @@ RUN set -eu; \
 # Install composer
 RUN curl https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
+# copy app assets
+COPY app/* /var/www/html/
+
 # Set container entrypoint and supervisord as command
 CMD ["sh", "-c", "/usr/bin/supervisord -n -c /etc/supervisord.conf"]
 ENTRYPOINT ["/docker-entrypoint.sh"]
