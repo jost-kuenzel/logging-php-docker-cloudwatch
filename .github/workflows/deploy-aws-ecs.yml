@@ -55,4 +55,34 @@ jobs:
           # be deployed to ECS.
           docker build -t $ECR_REGISTRY/log-docker-ecr:$IMAGE_TAG .
           docker push $ECR_REGISTRY/log-docker-ecr:$IMAGE_TAG
-          #echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: Deploy Fargate through AWS CloudFormation
+        id: deploy-fargate
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: log-docker-fargate
+          template: cloudformation/fargate.yml
+          capabilities: CAPABILITY_NAMED_IAM
+          parameter-overrides: "AvailabilityZone1=${{ secrets.AWS_REGION }}a,AvailabilityZone2=${{ secrets.AWS_REGION }}b"
+          no-fail-on-empty-changeset: "1"
+
+      - name: Download ECS task definition
+        run: |
+          aws ecs describe-task-definition --task-definition log-docker-fargate --query taskDefinition
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ steps.deploy-fargate.outputs.Name }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ steps.deploy-fargate.outputs.DefaultFargateServiceName }}
+          cluster: ${{ steps.deploy-fargate.outputs.FargateEcsClusterName }}
+          wait-for-service-stability: true

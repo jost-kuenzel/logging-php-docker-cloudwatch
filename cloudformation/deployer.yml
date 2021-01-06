@@ -49,6 +49,7 @@ Resources:
               - ec2:*
               - elasticloadbalancing:*
               - application-autoscaling:*
+              - cloudwatch:*
             Resource: "*"
           - Effect: Allow
             Action:
