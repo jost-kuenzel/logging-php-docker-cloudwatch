@@ -64,7 +64,7 @@ jobs:
           name: log-docker-fargate
           template: cloudformation/fargate.yml
           capabilities: CAPABILITY_NAMED_IAM
-          parameter-overrides: "AvailabilityZone1=${{ secrets.AWS_REGION }}a,AvailabilityZone2=${{ secrets.AWS_REGION }}b"
+          parameter-overrides: "NetworkStackName=${{ steps.deploy-vpc.outputs.Name }}"
           no-fail-on-empty-changeset: "1"
 
       - name: Download ECS task definition
