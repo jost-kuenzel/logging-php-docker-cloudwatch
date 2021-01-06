@@ -256,6 +256,14 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+      Policies:
+        - PolicyName: ecr-full-access
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:*
+                Resource: !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/log-docker-ecr"
 
   DefaultFargateTaskDefinition:
     Type: AWS::ECS::TaskDefinition
