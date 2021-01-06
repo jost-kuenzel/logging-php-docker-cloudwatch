@@ -22,6 +22,7 @@ jobs:
           role-duration-seconds: 1200
 
       - name: Deploy ECR through AWS CloudFormation
+        id: deploy-ecr
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: log-docker-ecr
@@ -46,6 +47,7 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ steps.deploy-ecr.outputs.RepositoryName }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # run composer:latest to install dependencies

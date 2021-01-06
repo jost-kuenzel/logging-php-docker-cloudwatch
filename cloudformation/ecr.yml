@@ -26,3 +26,15 @@ Resources:
               }
             ]
           }
+Outputs:
+  Name:
+    Description: VPC Stack Name
+    Value: !Ref AWS::StackName
+    Export:
+      Name: !Sub ${AWS::StackName}-Name
+
+  RepositoryName:
+    Description: ECR Repository Name
+    Value: !Ref ECRRepository
+    Export:
+      Name: !Sub ${AWS::StackName}-RepositoryName
