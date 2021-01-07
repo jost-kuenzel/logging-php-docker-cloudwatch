@@ -2,6 +2,8 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Builds a deployer iam user and role
 
 Parameters:
+  StackPrefix:
+    Type: String
   UserName:
     Type: String
 
@@ -55,14 +57,14 @@ Resources:
             Action:
               - iam:*
             Resource:
-              - !Sub "arn:aws:iam::${AWS::AccountId}:role/log-docker-fargate-default-task-role"
-              - !Sub "arn:aws:iam::${AWS::AccountId}:role/log-docker-fargate-default-task-execution-role"
-              - !Sub "arn:aws:iam::${AWS::AccountId}:role/log-docker-fargate-service-auto-scaling-role"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/${StackPrefix}-fargate-default-task-role"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/${StackPrefix}-fargate-default-task-execution-role"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/${StackPrefix}-fargate-service-auto-scaling-role"
           - Effect: Allow
             Action:
               - logs:*
             Resource:
-              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/fargate/log-docker-fargate/dev:log-stream:"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/fargate/${StackPrefix}-fargate/dev:log-stream:"
           - Effect: Allow
             Action:
               - ecs:CreateCluster
@@ -78,13 +80,13 @@ Resources:
             Action:
               - ecs:*
             Resource:
-              - !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/log-docker-fargate"
-              - !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:service/log-docker-fargate/log-docker-fargate"
+              - !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${StackPrefix}-fargate"
+              - !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:service/${StackPrefix}-fargate/${StackPrefix}-fargate"
           - Effect: Allow
             Action:
               - ecr:*
             Resource:
-              - !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/log-docker-ecr"
+              - !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${StackPrefix}-ecr"
           - Effect: Allow
             Action:
               - ecr:GetAuthorizationToken
@@ -93,9 +95,9 @@ Resources:
             Action:
               - cloudformation:*
             Resource:
-              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/log-docker-ecr/*"
-              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/log-docker-vpc/*"
-              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/log-docker-fargate/*"
+              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${StackPrefix}-ecr/*"
+              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${StackPrefix}-vpc/*"
+              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${StackPrefix}-fargate/*"
       PolicyName: DeployerRoleCapabilities
       Roles:
         - !Ref DeployerRole

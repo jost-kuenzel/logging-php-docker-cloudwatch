@@ -25,7 +25,7 @@ jobs:
         id: deploy-ecr
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: log-docker-ecr
+          name: ${{ secrets.STACK_PREFIX }}-ecr
           template: cloudformation/ecr.yml
           no-fail-on-empty-changeset: "1"
 
@@ -33,7 +33,7 @@ jobs:
         id: deploy-vpc
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: log-docker-vpc
+          name: ${{ secrets.STACK_PREFIX }}-vpc
           template: cloudformation/vpc.yml
           capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: "AvailabilityZone1=${{ secrets.AWS_REGION }}a,AvailabilityZone2=${{ secrets.AWS_REGION }}b"
@@ -55,18 +55,18 @@ jobs:
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/log-docker-ecr:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/log-docker-ecr:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: Deploy Fargate through AWS CloudFormation
         id: deploy-fargate
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: log-docker-fargate
+          name: ${{ secrets.STACK_PREFIX }}-fargate
           template: cloudformation/fargate.yml
           capabilities: CAPABILITY_NAMED_IAM
-          parameter-overrides: "NetworkStackName=${{ steps.deploy-vpc.outputs.Name }}"
+          parameter-overrides: "NetworkStackName=${{ steps.deploy-vpc.outputs.Name }},EcrStackName=${{ steps.deploy-ecr.outputs.Name }}"
           no-fail-on-empty-changeset: "1"
 
       - name: Download ECS task definition
