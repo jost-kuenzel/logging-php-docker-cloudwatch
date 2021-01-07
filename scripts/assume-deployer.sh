@@ -6,7 +6,9 @@
 
 set -e
 
-ROLE_NAME=log-docker-deployer
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+STACK_PREFIX=$(cat ${DIR}/../conf.json|jq -r .stack_prefix)
+ROLE_NAME=${STACK_PREFIX}-deployer
 
 ACCOUNT_ID=$(aws sts get-caller-identity|jq -r .Account)
 TEMP_ROLE=$(aws sts assume-role --role-arn arn:aws:iam::${ACCOUNT_ID}:role/${ROLE_NAME} --role-session-name cli)

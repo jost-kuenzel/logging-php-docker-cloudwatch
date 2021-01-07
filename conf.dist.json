@@ -1,5 +1,5 @@
 {
   "aws_region": "us-east-1",
-  "iam_user_name": "github",
+  "iam_user_name": "gh-actions",
   "stack_prefix": "log-docker"
 }

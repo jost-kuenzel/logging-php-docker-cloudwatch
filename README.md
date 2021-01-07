@@ -33,7 +33,7 @@ Open config.json and adjust settings:
 | Field | Meaning |
 |-------|---------|
 | `aws_region` | AWS region where you would like to deploy infrastructure |
-| `iam_user_name` | Name of the IAM user that is created for GitHub Actions to use. |
+| `iam_user_name` | Name of the IAM user that is created for GitHub Actions to use e.g. 'gh-actions' |
 | `stack_prefix` | A prefix to for all stacks that will be created e.g. 'log-docker'. It is also used to name creates resources. To avoid name length limitations of some AWS services it should not be longer than 12 characters. |
 
 ### Create the deployer
@@ -58,7 +58,7 @@ The workflow "Deploy to AWS ECS" defined in `.github/workflows/deploy-aws-ecs.ym
 The folder `scripts` contains helper scripts to create, update, delete, describe cloudformation stacks.
 ### Assume deployer role ###
 ```bash
-$(AWS_PROFILE=github ./scripts/assume-deployer.sh)
+$(AWS_PROFILE=gh-actions ./scripts/assume-deployer.sh)
 ```
 Replace 'github' with the user name you defined in `config.json`. The 'deployer' stack must have alredy been 
 created (see "Create the deployer").

@@ -26,12 +26,13 @@ AWS_ACCESS_KEY_ID=$(echo $TEMP_ACCESS_KEY | jq -r .AccessKey.AccessKeyId)
 AWS_SECRET_ACCESS_KEY=$(echo $TEMP_ACCESS_KEY | jq -r .AccessKey.SecretAccessKey)
 aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID} --profile ${IAM_USER_NAME}
 aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY} --profile ${IAM_USER_NAME}
+aws configure set region ${AWS_REGION} --profile ${IAM_USER_NAME}
 
 echo "Set GH Secrets"
-gh secret set STACK_PREFIX  -b ${STACK_PREFIX}
-gh secret set AWS_REGION  -b ${AWS_REGION}
-gh secret set AWS_ROLE  -b log-docker-deployer
-gh secret set AWS_ACCESS_KEY_ID  -b ${AWS_ACCESS_KEY_ID}
-gh secret set AWS_SECRET_ACCESS_KEY  -b ${AWS_SECRET_ACCESS_KEY}
+gh secret set STACK_PREFIX -b ${STACK_PREFIX}
+gh secret set AWS_REGION -b ${AWS_REGION}
+gh secret set AWS_ROLE -b ${STACK_PREFIX}-deployer
+gh secret set AWS_ACCESS_KEY_ID -b ${AWS_ACCESS_KEY_ID}
+gh secret set AWS_SECRET_ACCESS_KEY -b ${AWS_SECRET_ACCESS_KEY}
 
 echo "Done"

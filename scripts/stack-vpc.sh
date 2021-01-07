@@ -11,7 +11,7 @@ echo "Argument must be one of 'create', 'update', 'delete', 'describe'" && \
 exit 1
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-AWS_REGION=$(cat ${DIR}/../conf.json|jq -r .aws_region)
+export AWS_REGION=$(cat ${DIR}/../conf.json|jq -r .aws_region)
 STACK_PREFIX=$(cat ${DIR}/../conf.json|jq -r .stack_prefix)
 STACK=vpc
 
