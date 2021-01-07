@@ -16,8 +16,7 @@ RUN apk update \
 RUN sed -e "s|http {|http {\n\tinclude /etc/nginx/log_format.conf;|" -i /etc/nginx/nginx.conf \
     && sed -e 's|access_log .*|access_log /dev/stdout json_http_combined;|' -i /etc/nginx/nginx.conf \
     && rm /etc/nginx/conf.d/default.conf \
-    && mkdir -p /run/nginx/ \
-    && chown -R www-data:www-data /var/www/html
+    && mkdir -p /run/nginx/
 
 # Configure php 
 RUN set -eu; \
@@ -47,7 +46,8 @@ RUN set -eu; \
 RUN curl https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # copy app assets
-COPY app/* /var/www/html/
+COPY app/ /var/www/html/
+RUN chown -R nginx:nginx /var/www
 
 # Set container entrypoint and supervisord as command
 CMD ["sh", "-c", "/usr/bin/supervisord -n -c /etc/supervisord.conf"]
