@@ -1,6 +1,6 @@
 # logging-php-docker-cloudwatch
 
-A Docker container that runs PHP-FPM, NGINX and demonstrates logging in JSON format 
+A Docker image that runs PHP-FPM, NGINX and demonstrates logging in JSON format 
 to stdout in an AWS ECS environment.
 
 And for fun and out of curiosity the docker container can be build and deployed to AWS ECS using GitHub Actions 🚀.
